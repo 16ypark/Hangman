@@ -35,19 +35,26 @@ class ViewController: UIViewController {
             problemLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             problemLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 100),
             buttonsView.widthAnchor.constraint(equalToConstant: 280),
-            buttonsView.heightAnchor.constraint(equalToConstant: 336),
+            buttonsView.heightAnchor.constraint(equalToConstant: 392),
             buttonsView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             buttonsView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -20)
         ])
         let width = 70
         let height = 56
-        
-        for row in 0..<6 {
+        var counter = 0
+        var alphabet = ""
+        for row in 0..<7 {
             for col in 0..<4 {
                 let letterButton = UIButton(type: .system)
                 letterButton.titleLabel?.font = UIFont.systemFont(ofSize: 20)
                 
-                letterButton.setTitle("A", for: .normal)
+                if counter < 26 {
+                    alphabet = String(UnicodeScalar(UInt8(Int(Character("A").asciiValue!) + counter)))
+                } else {
+                    alphabet = ""
+                }
+                
+                letterButton.setTitle(alphabet, for: .normal)
                 
                 let frame = CGRect(x: col * width, y: row * height, width: width, height: height)
                 letterButton.frame = frame
@@ -56,6 +63,7 @@ class ViewController: UIViewController {
                 
                 letterButtons.append(letterButton)
                 //letterButton.addTarget(self, action: #selector(letterTapped), for: .touchUpInside)
+                counter += 1
             }
         }
     }
