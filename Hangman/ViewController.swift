@@ -10,10 +10,11 @@ import UIKit
 
 class ViewController: UIViewController {
     var problemLabel: UILabel!
-    var currentAnswer: UITextField!
+    var currentAnswer = ""
     var allWords = [String]()
     var usedWords = [String]()
     var letterButtons = [UIButton]()
+    var activatedButtons = [UIButton]()
     
     override func loadView() {
         view = UIView()
@@ -23,6 +24,7 @@ class ViewController: UIViewController {
         problemLabel.translatesAutoresizingMaskIntoConstraints = false
         problemLabel.textAlignment = .right
         problemLabel.text = ""
+        problemLabel.font = UIFont.systemFont(ofSize: 32)
         view.addSubview(problemLabel)
         
         let buttonsView = UIView()
@@ -62,7 +64,7 @@ class ViewController: UIViewController {
                 buttonsView.addSubview(letterButton)
                 
                 letterButtons.append(letterButton)
-                //letterButton.addTarget(self, action: #selector(letterTapped), for: .touchUpInside)
+                letterButton.addTarget(self, action: #selector(letterTapped), for: .touchUpInside)
                 counter += 1
             }
         }
@@ -82,9 +84,28 @@ class ViewController: UIViewController {
             allWords = ["EMPTY"]
         }
         
-        problemLabel.text = allWords.randomElement()
+        currentAnswer = allWords.randomElement()!
+        problemLabel.text = String(repeating: "?", count: currentAnswer.count)
     }
-
+    
+    @objc func letterTapped(_ sender: UIButton) {
+        guard let buttonTitle = sender.titleLabel?.text else { return }
+        var flag = true
+        var temp = currentAnswer
+        
+        while flag {
+            if let range = temp.rangeOfCharacter(from: CharacterSet(charactersIn: buttonTitle)) {
+                temp.replaceSubrange(range, with: "-")
+                problemLabel.text?.replaceSubrange(range, with: buttonTitle)
+                print(range)
+            } else {
+                flag = false
+            }
+        }
+        
+        activatedButtons.append(sender)
+        sender.isHidden = true
+    }
 
 }
 
