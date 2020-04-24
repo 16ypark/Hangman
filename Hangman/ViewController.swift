@@ -15,6 +15,7 @@ class ViewController: UIViewController {
     var usedWords = [String]()
     var letterButtons = [UIButton]()
     var activatedButtons = [UIButton]()
+    var score = 0
     
     override func loadView() {
         view = UIView()
@@ -86,6 +87,8 @@ class ViewController: UIViewController {
         
         currentAnswer = allWords.randomElement()!
         problemLabel.text = String(repeating: "?", count: currentAnswer.count)
+        
+        title = "Score: \(score)"
     }
     
     @objc func letterTapped(_ sender: UIButton) {
