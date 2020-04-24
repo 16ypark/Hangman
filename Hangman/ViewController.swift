@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     var problemLabel: UILabel!
+    var lifeLabel: UILabel!
     var currentAnswer = ""
     var allWords = [String]()
     var usedWords = [String]()
@@ -19,16 +20,27 @@ class ViewController: UIViewController {
             title = "Score: \(score)"
         }
     }
-    var wrongAnswers = 0
+    var wrongAnswers = 0 {
+        didSet {
+            lifeLabel.text = "Life: \(7 - wrongAnswers)"
+        }
+    }
     var newGame = true
     
     override func loadView() {
         view = UIView()
         view.backgroundColor = .white
 
+        lifeLabel = UILabel()
+        lifeLabel.translatesAutoresizingMaskIntoConstraints = false
+        lifeLabel.textAlignment = .left
+        lifeLabel.text = "Life: \(7 - wrongAnswers)"
+        lifeLabel.font = UIFont.systemFont(ofSize: 18)
+        view.addSubview(lifeLabel)
+        
         problemLabel = UILabel()
         problemLabel.translatesAutoresizingMaskIntoConstraints = false
-        problemLabel.textAlignment = .right
+        problemLabel.textAlignment = .center
         problemLabel.text = ""
         problemLabel.font = UIFont.systemFont(ofSize: 32)
         view.addSubview(problemLabel)
@@ -40,6 +52,8 @@ class ViewController: UIViewController {
         view.addSubview(buttonsView)
         
         NSLayoutConstraint.activate([
+            lifeLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 10),
+            lifeLabel.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
             problemLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             problemLabel.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 100),
             buttonsView.widthAnchor.constraint(equalToConstant: 280),
