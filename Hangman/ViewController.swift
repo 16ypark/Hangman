@@ -14,8 +14,13 @@ class ViewController: UIViewController {
     var allWords = [String]()
     var usedWords = [String]()
     var letterButtons = [UIButton]()
-    var activatedButtons = [UIButton]()
-    var score = 0
+    var score = 0 {
+        didSet {
+            title = "Score: \(score)"
+        }
+    }
+    var wrongAnswers = 0
+    var newGame = true
     
     override func loadView() {
         view = UIView()
@@ -85,19 +90,32 @@ class ViewController: UIViewController {
             allWords = ["EMPTY"]
         }
         
+        title = "Score: \(score)"
+        
+        startGame()
+    }
+    
+    func startGame(action: UIAlertAction! = nil) {
         currentAnswer = allWords.randomElement()!
         problemLabel.text = String(repeating: "?", count: currentAnswer.count)
-        
-        title = "Score: \(score)"
+        wrongAnswers = 0
+        for btn in letterButtons {
+            btn.isHidden = false
+        }
+        if newGame {
+            score = 0
+        }
     }
     
     @objc func letterTapped(_ sender: UIButton) {
         guard let buttonTitle = sender.titleLabel?.text else { return }
         var flag = true
+        var correctFlag = false
         var temp = currentAnswer
         
         while flag {
             if let range = temp.rangeOfCharacter(from: CharacterSet(charactersIn: buttonTitle)) {
+                correctFlag = true
                 temp.replaceSubrange(range, with: "-")
                 problemLabel.text?.replaceSubrange(range, with: buttonTitle)
                 print(range)
@@ -106,7 +124,25 @@ class ViewController: UIViewController {
             }
         }
         
-        activatedButtons.append(sender)
+        if !correctFlag {
+            wrongAnswers += 1
+            if wrongAnswers == 7 {
+                newGame = true
+                let ac = UIAlertController(title: "You lose!", message: "Your final score is \(score)", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Start Over", style: .default, handler: startGame))
+                present(ac, animated: true)
+            }
+        } else {
+            if !(problemLabel.text?.contains(Character("?")))! {
+                newGame = false
+                score += 1
+                let ac = UIAlertController(title: "You win!", message: "Your score is \(score)", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: startGame))
+                present(ac, animated: true)
+            }
+        }
+        
+        
         sender.isHidden = true
     }
 
